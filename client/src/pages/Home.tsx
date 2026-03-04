@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, Banknote, ShieldCheck, TrendingDown, ClipboardCheck, Info, MessageCircle } from "lucide-react";
+import { ArrowRight, BadgeCheck, Banknote, ShieldCheck, TrendingDown, ClipboardCheck, Info, MessageCircle, User } from "lucide-react";
 import { Link } from "wouter";
 import heroImage from "@/assets/images/hero-car.jpg";
 import { mockCars, sellers } from "@/data/mock-cars";
@@ -35,26 +35,27 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 z-10 relative mt-20">
+        <div className="container mx-auto px-4 z-10 relative mt-20 text-center md:text-left">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <TrendingDown className="w-4 h-4" />
               <span>Oportunidades Reais Abaixo da FIPE</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 leading-tight">
-              Transparência total em <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">veículos de repasse</span>.
+            <h1 className="text-5xl md:text-8xl font-heading font-extrabold text-white mb-6 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">GOLDEN</span> <br/>
+              REPASSES
             </h1>
             
-            <p className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl leading-relaxed">
-              Na Golden Repasses, você compra com preço de revenda. Consultamos e informamos 
-              detalhadamente se o veículo possui histórico de leilão ou sinistro. 
+            <p className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+              Especialistas em veículos de repasse com transparência total. 
+              Onde o preço de revenda encontra a segurança que você precisa.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300 justify-center md:justify-start">
               <Link href="/estoque">
-                <a className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-semibold text-lg hover:bg-primary/90 transition-all text-center flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(250,204,21,0.3)]">
-                  Ver Estoque Agora
+                <a className="bg-primary text-primary-foreground px-10 py-5 rounded-full font-bold text-lg hover:bg-primary/90 transition-all text-center flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:scale-105 active:scale-95">
+                  Ver Estoque
                   <ArrowRight className="w-5 h-5" />
                 </a>
               </Link>
@@ -63,27 +64,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sellers Section */}
-      <section className="py-16 bg-white/5 border-b border-white/10">
+      {/* Sellers Section - Clean and Minimal */}
+      <section className="py-20 bg-black/40 border-y border-white/5">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-heading font-bold text-white mb-8 text-center">Fale com nossos Consultores</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-heading font-bold text-white mb-2">Nossos Consultores</h2>
+            <p className="text-white/40 text-sm">Fale diretamente com nossa equipe via WhatsApp</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
             {sellers.map((seller) => (
               <a 
                 key={seller.id}
                 href={`https://wa.me/${seller.phone}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-background border border-white/10 p-6 rounded-2xl flex items-center gap-4 hover:border-primary/50 transition-all group"
+                className="group relative bg-white/5 border border-white/10 p-8 rounded-3xl flex flex-col items-center text-center hover:bg-white/10 hover:border-primary/50 transition-all duration-300 overflow-hidden"
               >
-                <img src={seller.image} alt={seller.name} className="w-16 h-16 rounded-full object-cover border-2 border-primary/20" />
-                <div>
-                  <h4 className="font-bold text-white">{seller.name}</h4>
-                  <div className="flex items-center gap-1 text-primary text-sm">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>WhatsApp</span>
-                  </div>
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                  <MessageCircle className="w-12 h-12 text-primary" />
                 </div>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <User className="w-8 h-8 text-primary" />
+                </div>
+                <h4 className="font-heading font-bold text-white text-lg mb-1">{seller.name}</h4>
+                <span className="text-primary text-xs font-medium tracking-widest uppercase">Consultor</span>
               </a>
             ))}
           </div>
@@ -91,45 +95,72 @@ export default function Home() {
       </section>
 
       {/* Featured Cars */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
-                Oportunidades do Dia
+      <section className="py-24 bg-background relative overflow-hidden">
+        {/* Subtle Background Glows */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-yellow-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-16 gap-6">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl md:text-5xl font-heading font-extrabold text-white mb-4">
+                Estoque em <span className="text-primary">Destaque</span>
               </h2>
+              <p className="text-white/40 text-lg">Oportunidades reais com transparência garantida.</p>
             </div>
+            <Link href="/estoque">
+              <a className="flex items-center gap-2 text-primary hover:text-primary/80 font-bold transition-all hover:translate-x-1">
+                Ver Todo o Estoque
+                <ArrowRight className="w-5 h-5" />
+              </a>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {featuredCars.map((car) => (
-              <div key={car.id} className="group rounded-2xl border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 transition-all hover:border-primary/50">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img src={car.image} alt={car.model} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
-                    Repasse
+              <div key={car.id} className="group relative rounded-[2rem] border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:border-primary/50 flex flex-col h-full">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img src={car.image} alt={car.model} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute top-6 left-6">
+                    <span className="bg-primary/90 backdrop-blur-md text-primary-foreground px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl">
+                      Repasse
+                    </span>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="font-heading font-bold text-xl text-white mb-4">{car.brand} {car.model}</h3>
-                  <div className="space-y-2 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-white/60">FIPE: {formatPrice(car.fipePrice)}</span>
+                
+                <div className="p-8 flex-grow flex flex-col">
+                  <div className="mb-6">
+                    <h3 className="font-heading font-black text-2xl text-white mb-1 group-hover:text-primary transition-colors">{car.brand} {car.model}</h3>
+                    <p className="text-white/40 font-medium">{car.year} • {car.mileage.toLocaleString()} km</p>
+                  </div>
+
+                  <div className="space-y-4 mb-8 mt-auto">
+                    <div className="flex flex-col">
+                      <span className="text-white/30 text-xs font-bold uppercase tracking-wider mb-1">Tabela FIPE: {formatPrice(car.fipePrice)}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl font-heading font-black text-white">{formatPrice(car.price)}</span>
+                        <div className="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
+                          -{Math.round(((car.fipePrice - car.price) / car.fipePrice) * 100)}%
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-end">
-                      <span className="text-2xl font-heading font-bold text-primary">{formatPrice(car.price)}</span>
-                    </div>
-                    <div className={`text-xs p-2 rounded mt-2 ${car.history === 'clean' ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'}`}>
+                    
+                    <div className={`flex items-center gap-2 text-xs font-bold p-3 rounded-2xl ${
+                      car.history === 'clean' ? 'bg-green-500/5 text-green-400/70 border border-green-500/10' : 'bg-yellow-500/5 text-yellow-400/70 border border-yellow-500/10'
+                    }`}>
+                      <Info className="w-4 h-4" />
                       {getHistoryLabel(car.history)}
                     </div>
                   </div>
+
                   <a 
                     href={`https://wa.me/${sellers[0].phone}?text=Olá, tenho interesse no ${car.brand} ${car.model}`}
                     target="_blank"
-                    className="w-full inline-flex justify-center items-center gap-2 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                    className="w-full inline-flex justify-center items-center gap-3 bg-white text-black py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    Chamar no WhatsApp
+                    Consultar Agora
                   </a>
                 </div>
               </div>
@@ -138,29 +169,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instructions Section for the user */}
-      <section className="py-24 bg-primary/5 border-t border-white/10">
+      {/* Transparency / Mission */}
+      <section className="py-24 bg-white/5 relative">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-background p-12 rounded-3xl border border-primary/20">
-            <h2 className="text-3xl font-heading font-bold text-white mb-6">Como Gerenciar o Site</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-primary font-bold mb-4">Adicionar Carros e Preços</h3>
-                <p className="text-white/60 text-sm leading-relaxed">
-                  Para adicionar novos carros, você só precisa editar o arquivo <code className="text-primary">client/src/data/mock-cars.ts</code>. 
-                  Lá você define:<br/>
-                  • Marca e Modelo<br/>
-                  • Preço de Venda e Preço FIPE<br/>
-                  • Histórico (Leilão, Sinistro ou Limpo)<br/>
-                  • Link da imagem (pode usar links da internet)
-                </p>
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-6xl font-heading font-extrabold text-white mb-8">
+              Nossa <span className="text-primary underline decoration-primary/20 underline-offset-8">Missão</span>
+            </h2>
+            <p className="text-xl text-white/60 leading-relaxed mb-12">
+              Não somos apenas uma loja de carros. Somos o seu atalho para o melhor preço do mercado, 
+              entregando a verdade absoluta sobre cada veículo. Sinistro, leilão ou procedência impecável: 
+              você saberá de tudo antes de fechar o negócio.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="p-6">
+                <ShieldCheck className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h4 className="text-white font-bold mb-2">Segurança</h4>
+                <p className="text-white/40 text-sm">Consultas completas em todas as bases.</p>
               </div>
-              <div>
-                <h3 className="text-primary font-bold mb-4">Configurar Vendedores</h3>
-                <p className="text-white/60 text-sm leading-relaxed">
-                  No mesmo arquivo <code className="text-primary">mock-cars.ts</code>, existe a lista <code className="text-primary">sellers</code>. 
-                  Basta colocar o nome e o número de WhatsApp (com DDD e sem espaços) dos seus 3 vendedores para que os botões funcionem automaticamente.
-                </p>
+              <div className="p-6">
+                <Banknote className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h4 className="text-white font-bold mb-2">Economia</h4>
+                <p className="text-white/40 text-sm">Valores reais abaixo da tabela FIPE.</p>
+              </div>
+              <div className="p-6">
+                <ClipboardCheck className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h4 className="text-white font-bold mb-2">Rapidez</h4>
+                <p className="text-white/40 text-sm">Negociação direta e sem burocracia.</p>
               </div>
             </div>
           </div>

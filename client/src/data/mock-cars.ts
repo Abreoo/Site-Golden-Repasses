@@ -17,27 +17,28 @@ export interface Seller {
   id: string;
   name: string;
   phone: string;
-  image: string;
 }
 
 export const sellers: Seller[] = [
   {
     id: "1",
-    name: "Ricardo",
-    phone: "5511999999991",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200&h=200"
+    name: "Matheus",
+    phone: "5511999999991"
   },
   {
     id: "2",
-    name: "Marcelo",
-    phone: "5511999999992",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200&h=200"
+    name: "Eric",
+    phone: "5511999999992"
   },
   {
     id: "3",
-    name: "Felipe",
-    phone: "5511999999993",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200&h=200"
+    name: "Ezequiel",
+    phone: "5511999999993"
+  },
+  {
+    id: "4",
+    name: "Luiz André",
+    phone: "5511999999994"
   }
 ];
 
