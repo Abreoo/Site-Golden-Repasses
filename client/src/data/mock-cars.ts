@@ -10,7 +10,36 @@ export interface Car {
   transmission: string;
   fuel: string;
   status: 'available' | 'reserved' | 'sold';
+  history: 'clean' | 'auction' | 'accident';
 }
+
+export interface Seller {
+  id: string;
+  name: string;
+  phone: string;
+  image: string;
+}
+
+export const sellers: Seller[] = [
+  {
+    id: "1",
+    name: "Ricardo",
+    phone: "5511999999991",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200&h=200"
+  },
+  {
+    id: "2",
+    name: "Marcelo",
+    phone: "5511999999992",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200&h=200"
+  },
+  {
+    id: "3",
+    name: "Felipe",
+    phone: "5511999999993",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200&h=200"
+  }
+];
 
 export const mockCars: Car[] = [
   {
@@ -21,10 +50,11 @@ export const mockCars: Car[] = [
     price: 265000,
     fipePrice: 285900,
     mileage: 24000,
-    image: "/src/assets/images/hero-car.jpg",
+    image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80",
     transmission: "Automático",
     fuel: "Gasolina",
-    status: 'available'
+    status: 'available',
+    history: 'clean'
   },
   {
     id: "2",
@@ -34,10 +64,11 @@ export const mockCars: Car[] = [
     price: 125000,
     fipePrice: 142300,
     mileage: 45000,
-    image: "/src/assets/images/car-1.jpg",
+    image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&q=80",
     transmission: "Automático",
     fuel: "Flex",
-    status: 'available'
+    status: 'available',
+    history: 'auction'
   },
   {
     id: "3",
@@ -47,10 +78,11 @@ export const mockCars: Car[] = [
     price: 148000,
     fipePrice: 165000,
     mileage: 32000,
-    image: "/src/assets/images/car-2.jpg",
+    image: "https://images.unsplash.com/photo-1625217527288-93919c99650a?auto=format&fit=crop&q=80",
     transmission: "Automático",
     fuel: "Flex",
-    status: 'available'
+    status: 'available',
+    history: 'clean'
   },
   {
     id: "4",
@@ -60,9 +92,10 @@ export const mockCars: Car[] = [
     price: 185000,
     fipePrice: 210000,
     mileage: 38000,
-    image: "/src/assets/images/car-3.jpg",
+    image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80",
     transmission: "Automático",
     fuel: "Gasolina",
-    status: 'available'
+    status: 'available',
+    history: 'accident'
   }
 ];
