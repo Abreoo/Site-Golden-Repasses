@@ -23,22 +23,22 @@ export const sellers: Seller[] = [
   {
     id: "1",
     name: "Matheus",
-    phone: "5511999999991"
+    phone: "555195898889"
   },
   {
     id: "2",
     name: "Eric",
-    phone: "5511999999992"
+    phone: "555197394408"
   },
   {
     id: "3",
     name: "Ezequiel",
-    phone: "5511999999993"
+    phone: "555195611247"
   },
   {
     id: "4",
     name: "Luiz André",
-    phone: "5511999999994"
+    phone: "555197598587"
   }
 ];
 

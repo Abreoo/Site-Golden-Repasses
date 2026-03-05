@@ -42,7 +42,7 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-white/60 text-sm">(11) 99999-9999</span>
+                <span className="text-white/60 text-sm">(51) 9759-8587</span>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
@@ -50,7 +50,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-white/60 text-sm">Av. das Nações Unidas, 1000<br/>São Paulo - SP</span>
+                <span className="text-white/60 text-sm">Avenida das Roseiras<br/>Charqueadas - RS</span>
               </li>
             </ul>
           </div>
