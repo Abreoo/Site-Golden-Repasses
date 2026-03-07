@@ -1,10 +1,21 @@
-import { ArrowRight, BadgeCheck, Banknote, ShieldCheck, TrendingDown, ClipboardCheck, Info, MessageCircle, User } from "lucide-react";
+import { ArrowRight, BadgeCheck, Banknote, ShieldCheck, TrendingDown, ClipboardCheck, Info, MessageCircle, User, Settings, Image as ImageIcon, Tag, Hash } from "lucide-react";
 import { Link } from "wouter";
 import heroImage from "@/assets/images/hero-car.jpg";
 import { mockCars, sellers } from "@/data/mock-cars";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  const featuredCars = mockCars.slice(0, 3);
+  const [cars, setCars] = useState(mockCars);
+
+  // Carrega do LocalStorage se existir
+  useEffect(() => {
+    const savedCars = localStorage.getItem('golden_repasses_inventory');
+    if (savedCars) {
+      setCars(JSON.parse(savedCars));
+    }
+  }, []);
+
+  const featuredCars = cars.slice(0, 3);
 
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -64,13 +75,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sellers Section - Clean and Minimal */}
+      {/* Sellers Section */}
       <section className="py-20 bg-black/40 border-y border-white/5">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-heading font-bold text-white mb-2">Nossos Consultores</h2>
-            <p className="text-white/40 text-sm">Fale diretamente com nossa equipe via WhatsApp</p>
-          </div>
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-heading font-bold text-white mb-2">Nossos Consultores</h2>
+          <p className="text-white/40 text-sm mb-12">Fale diretamente com nossa equipe via WhatsApp</p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
             {sellers.map((seller) => (
               <a 
@@ -96,7 +105,6 @@ export default function Home() {
 
       {/* Featured Cars */}
       <section className="py-24 bg-background relative overflow-hidden">
-        {/* Subtle Background Glows */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-yellow-500/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -108,10 +116,10 @@ export default function Home() {
               </h2>
               <p className="text-white/40 text-lg">Oportunidades reais com transparência garantida.</p>
             </div>
-            <Link href="/estoque">
-              <a className="flex items-center gap-2 text-primary hover:text-primary/80 font-bold transition-all hover:translate-x-1">
-                Ver Todo o Estoque
-                <ArrowRight className="w-5 h-5" />
+            <Link href="/admin">
+              <a className="flex items-center gap-2 bg-white/5 text-white/60 hover:text-white px-4 py-2 rounded-xl text-sm transition-all border border-white/10">
+                <Settings className="w-4 h-4" />
+                Painel de Controle
               </a>
             </Link>
           </div>
@@ -140,9 +148,11 @@ export default function Home() {
                       <span className="text-white/30 text-xs font-bold uppercase tracking-wider mb-1">Tabela FIPE: {formatPrice(car.fipePrice)}</span>
                       <div className="flex items-center gap-3">
                         <span className="text-3xl font-heading font-black text-white">{formatPrice(car.price)}</span>
-                        <div className="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
-                          -{Math.round(((car.fipePrice - car.price) / car.fipePrice) * 100)}%
-                        </div>
+                        {car.fipePrice > car.price && (
+                          <div className="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
+                            -{Math.round(((car.fipePrice - car.price) / car.fipePrice) * 100)}%
+                          </div>
+                        )}
                       </div>
                     </div>
                     
@@ -169,34 +179,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Transparency / Mission */}
+      {/* Mission */}
       <section className="py-24 bg-white/5 relative">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-6xl font-heading font-extrabold text-white mb-8">
-              Nossa <span className="text-primary underline decoration-primary/20 underline-offset-8">Missão</span>
-            </h2>
-            <p className="text-xl text-white/60 leading-relaxed mb-12">
-              Não somos apenas uma loja de carros. Somos o seu atalho para o melhor preço do mercado, 
-              entregando a verdade absoluta sobre cada veículo. Sinistro, leilão ou procedência impecável: 
-              você saberá de tudo antes de fechar o negócio.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="p-6">
-                <ShieldCheck className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h4 className="text-white font-bold mb-2">Segurança</h4>
-                <p className="text-white/40 text-sm">Consultas completas em todas as bases.</p>
-              </div>
-              <div className="p-6">
-                <Banknote className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h4 className="text-white font-bold mb-2">Economia</h4>
-                <p className="text-white/40 text-sm">Valores reais abaixo da tabela FIPE.</p>
-              </div>
-              <div className="p-6">
-                <ClipboardCheck className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h4 className="text-white font-bold mb-2">Rapidez</h4>
-                <p className="text-white/40 text-sm">Negociação direta e sem burocracia.</p>
-              </div>
+        <div className="container mx-auto px-4 text-center max-w-4xl">
+          <h2 className="text-4xl md:text-6xl font-heading font-extrabold text-white mb-8">
+            Nossa <span className="text-primary underline decoration-primary/20 underline-offset-8">Missão</span>
+          </h2>
+          <p className="text-xl text-white/60 leading-relaxed mb-12">
+            Não somos apenas uma loja de carros. Somos o seu atalho para o melhor preço do mercado, 
+            entregando a verdade absoluta sobre cada veículo. Sinistro, leilão ou procedência impecável: 
+            você saberá de tudo antes de fechar o negócio.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6">
+              <ShieldCheck className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h4 className="text-white font-bold mb-2">Segurança</h4>
+              <p className="text-white/40 text-sm">Consultas completas em todas as bases.</p>
+            </div>
+            <div className="p-6">
+              <Banknote className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h4 className="text-white font-bold mb-2">Economia</h4>
+              <p className="text-white/40 text-sm">Valores reais abaixo da tabela FIPE.</p>
+            </div>
+            <div className="p-6">
+              <ClipboardCheck className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h4 className="text-white font-bold mb-2">Rapidez</h4>
+              <p className="text-white/40 text-sm">Negociação direta e sem burocracia.</p>
             </div>
           </div>
         </div>
@@ -204,3 +212,4 @@ export default function Home() {
     </div>
   );
 }
+
