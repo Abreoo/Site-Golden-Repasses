@@ -1,36 +1,65 @@
 import { ArrowRight, BadgeCheck, Banknote, ShieldCheck, TrendingDown, ClipboardCheck, Info, MessageCircle, User, Settings, Image as ImageIcon, Tag, Hash } from "lucide-react";
 import { Link } from "wouter";
 import heroImage from "@/assets/images/hero-car.jpg";
-import { mockCars, sellers } from "@/data/mock-cars";
 import { useState, useEffect } from "react";
 
-export default function Home() {
-  const [cars, setCars] = useState(mockCars);
+interface Car {
+  id: string;
+  brand: string;
+  model: string;
+  year: number;
+  price: string;
+  mileage: number;
+  color: string;
+  fuelType: string;
+  transmission: string;
+  description?: string;
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
-  // Carrega do LocalStorage se existir
+export default function Home() {
+  const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const savedCars = localStorage.getItem('golden_repasses_inventory');
-    if (savedCars) {
-      setCars(JSON.parse(savedCars));
-    }
+    const fetchCars = async () => {
+      try {
+        const response = await fetch('/api/cars');
+        if (response.ok) {
+          const data = await response.json();
+          setCars(data);
+        }
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCars();
   }, []);
 
   const featuredCars = cars.slice(0, 3);
 
-  const formatPrice = (value: number) => {
+  const formatPrice = (value: string) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(value);
+    }).format(parseFloat(value));
   };
 
-  const getHistoryLabel = (history: string) => {
-    switch(history) {
-      case 'auction': return 'Passagem por Leilão';
-      case 'accident': return 'Histórico de Sinistro';
-      default: return 'Sem Restrições';
-    }
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Carregando carros...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -81,7 +110,12 @@ export default function Home() {
           <h2 className="text-2xl font-heading font-bold text-white mb-2">Nossos Consultores</h2>
           <p className="text-white/40 text-sm mb-12">Fale diretamente com nossa equipe via WhatsApp</p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
-            {sellers.map((seller) => (
+            {[
+              { id: '1', name: 'João Silva', phone: '5511999998888' },
+              { id: '2', name: 'Maria Santos', phone: '5511999998888' },
+              { id: '3', name: 'Pedro Costa', phone: '5511999998888' },
+              { id: '4', name: 'Ana Oliveira', phone: '5511999998888' }
+            ].map((seller) => (
               <a 
                 key={seller.id}
                 href={`https://wa.me/${seller.phone}`}
@@ -128,11 +162,11 @@ export default function Home() {
             {featuredCars.map((car) => (
               <div key={car.id} className="group relative rounded-[2rem] border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:border-primary/50 flex flex-col h-full">
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img src={car.image} alt={car.model} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src="https://via.placeholder.com/400x250/4CAF50/ffffff?text={car.brand}+{car.model}" alt={car.model} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute top-6 left-6">
                     <span className="bg-primary/90 backdrop-blur-md text-primary-foreground px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl">
-                      Repasse
+                      Disponível
                     </span>
                   </div>
                 </div>
@@ -145,33 +179,23 @@ export default function Home() {
 
                   <div className="space-y-4 mb-8 mt-auto">
                     <div className="flex flex-col">
-                      <span className="text-white/30 text-xs font-bold uppercase tracking-wider mb-1">Tabela FIPE: {formatPrice(car.fipePrice)}</span>
                       <div className="flex items-center gap-3">
                         <span className="text-3xl font-heading font-black text-white">{formatPrice(car.price)}</span>
-                        {car.fipePrice > car.price && (
-                          <div className="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
-                            -{Math.round(((car.fipePrice - car.price) / car.fipePrice) * 100)}%
-                          </div>
-                        )}
                       </div>
                     </div>
                     
-                    <div className={`flex items-center gap-2 text-xs font-bold p-3 rounded-2xl ${
-                      car.history === 'clean' ? 'bg-green-500/5 text-green-400/70 border border-green-500/10' : 'bg-yellow-500/5 text-yellow-400/70 border border-yellow-500/10'
-                    }`}>
+                    <div className="flex items-center gap-2 text-xs font-bold p-3 rounded-2xl bg-green-500/5 text-green-400/70 border border-green-500/10">
                       <Info className="w-4 h-4" />
-                      {getHistoryLabel(car.history)}
+                      Disponível para venda
                     </div>
                   </div>
 
-                  <a 
-                    href={`https://wa.me/${sellers[0].phone}?text=Olá, tenho interesse no ${car.brand} ${car.model}`}
-                    target="_blank"
-                    className="w-full inline-flex justify-center items-center gap-3 bg-white text-black py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-95"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    Consultar Agora
-                  </a>
+                  <Link href={`/car/${car.id}`}>
+                    <a className="w-full inline-flex justify-center items-center gap-3 bg-white text-black py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-95">
+                      <ImageIcon className="w-5 h-5" />
+                      Ver Detalhes e Fotos
+                    </a>
+                  </Link>
                 </div>
               </div>
             ))}

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { mockCars, Car } from "@/data/mock-cars";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { CarPhotoUpload } from "@/components/CarPhotoUpload";
 
 import {
   Select,
@@ -21,60 +21,139 @@ import {
   Image as ImageIcon,
   Car as CarIcon,
   DollarSign,
-  History
+  History,
+  Upload,
+  User,
+  MessageCircle
 } from "lucide-react";
 
 import { Link } from "wouter";
 
+interface Car {
+  id: string;
+  brand: string;
+  model: string;
+  year: number;
+  price: string;
+  mileage: number;
+  color: string;
+  fuelType: string;
+  transmission: string;
+  description?: string | null;
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 function Admin() {
 
-  const [cars, setCars] = useState<Car[]>(mockCars);
+  const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedCars = localStorage.getItem("golden_repasses_inventory");
+    const fetchCars = async () => {
+      try {
+        const response = await fetch("/api/cars");
+        if (response.ok) {
+          const data = await response.json();
+          setCars(data);
+        }
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (savedCars) {
-      setCars(JSON.parse(savedCars));
-    }
-
+    fetchCars();
   }, []);
 
   const handleSave = () => {
+    const saveAll = async () => {
+      try {
+        await Promise.all(
+          cars.map((car) =>
+            fetch(`/api/cars/${car.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                brand: car.brand,
+                model: car.model,
+                year: car.year,
+                price: car.price,
+                mileage: car.mileage,
+                color: car.color,
+                fuelType: car.fuelType,
+                transmission: car.transmission,
+                description: car.description ?? null,
+                isAvailable: car.isAvailable,
+              }),
+            })
+          )
+        );
+        alert("Estoque salvo no banco com sucesso!");
+      } catch (error) {
+        console.error("Error saving cars:", error);
+        alert("Erro ao salvar estoque.");
+      }
+    };
 
-    localStorage.setItem(
-      "golden_repasses_inventory",
-      JSON.stringify(cars)
-    );
-
-    alert("Estoque salvo com sucesso!");
+    saveAll();
 
   };
 
   const addCar = () => {
+    const create = async () => {
+      try {
+        const response = await fetch("/api/cars", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            brand: "Nova Marca",
+            model: "Novo Modelo",
+            year: new Date().getFullYear(),
+            price: "0",
+            mileage: 0,
+            color: "Preto",
+            fuelType: "Flex",
+            transmission: "Automático",
+            description: null,
+            isAvailable: true,
+          }),
+        });
 
-    const newCar: Car = {
-      id: Date.now().toString(),
-      brand: "Nova Marca",
-      model: "Novo Modelo",
-      year: new Date().getFullYear(),
-      price: 0,
-      fipePrice: 0,
-      mileage: 0,
-      image:
-        "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80",
-      transmission: "Automático",
-      fuel: "Flex",
-      status: "available",
-      history: "clean"
+        if (response.ok) {
+          const created = await response.json();
+          setCars((prev) => [created, ...prev]);
+        } else {
+          alert("Erro ao criar carro.");
+        }
+      } catch (error) {
+        console.error("Error creating car:", error);
+        alert("Erro ao criar carro.");
+      }
     };
 
-    setCars([newCar, ...cars]);
+    create();
 
   };
 
   const removeCar = (id: string) => {
+    const remove = async () => {
+      try {
+        const response = await fetch(`/api/cars/${id}`, { method: "DELETE" });
+        if (response.ok || response.status === 204) {
+          setCars((prev) => prev.filter((c) => c.id !== id));
+        } else {
+          alert("Erro ao deletar carro.");
+        }
+      } catch (error) {
+        console.error("Error deleting car:", error);
+        alert("Erro ao deletar carro.");
+      }
+    };
 
-    setCars(cars.filter((c) => c.id !== id));
+    remove();
 
   };
 
@@ -130,44 +209,45 @@ function Admin() {
 
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
+        {loading ? (
+          <div className="text-white/60">Carregando...</div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
 
-          {cars.map((car) => (
+            {cars.map((car) => (
 
-            <Card key={car.id} className="bg-white/5 border-white/10">
+              <Card key={car.id} className="bg-white/5 border-white/10">
 
-              <CardContent className="p-8">
+                <CardContent className="p-8">
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                   {/* IMAGEM */}
 
-                  <div>
+                    <div>
 
                     <Label className="text-white/60 text-xs flex items-center gap-2 mb-2">
 
-                      <ImageIcon className="w-3 h-3" />
-                      Imagem
+                      <Upload className="w-3 h-3" />
+                      Fotos do Veículo
 
                     </Label>
 
-                    <img
-                      src={car.image}
-                      className="rounded-xl mb-3"
-                    />
-
-                    <Input
-                      value={car.image}
-                      onChange={(e) =>
-                        updateCar(car.id, "image", e.target.value)
-                      }
-                    />
+                    <div className="space-y-4">
+                      <CarPhotoUpload carId={car.id} onUploadComplete={() => {}} />
+                      
+                      <div className="text-xs text-white/40">
+                        <p>• Arraste e solte ou clique para selecionar</p>
+                        <p>• Máximo 10 fotos (5MB cada)</p>
+                        <p>• Formatos: JPEG, PNG, WebP</p>
+                      </div>
+                    </div>
 
                   </div>
 
                   {/* IDENTIFICAÇÃO */}
 
-                  <div>
+                    <div>
 
                     <Label className="text-white/60 text-xs flex items-center gap-2 mb-2">
 
@@ -201,13 +281,40 @@ function Admin() {
                         updateCar(car.id, "year", parseInt(e.target.value))
                       }
                       placeholder="Ano"
+                      className="mb-3"
+                    />
+
+                    <Input
+                      value={car.color}
+                      onChange={(e) =>
+                        updateCar(car.id, "color", e.target.value)
+                      }
+                      placeholder="Cor"
+                      className="mb-3"
+                    />
+
+                    <Input
+                      value={car.fuelType}
+                      onChange={(e) =>
+                        updateCar(car.id, "fuelType", e.target.value)
+                      }
+                      placeholder="Combustível"
+                      className="mb-3"
+                    />
+
+                    <Input
+                      value={car.transmission}
+                      onChange={(e) =>
+                        updateCar(car.id, "transmission", e.target.value)
+                      }
+                      placeholder="Câmbio"
                     />
 
                   </div>
 
                   {/* PREÇOS */}
 
-                  <div>
+                    <div>
 
                     <Label className="text-white/60 text-xs flex items-center gap-2 mb-2">
 
@@ -217,29 +324,28 @@ function Admin() {
                     </Label>
 
                     <Input
-                      type="number"
-                      value={car.fipePrice}
+                      value={car.price}
                       onChange={(e) =>
-                        updateCar(car.id, "fipePrice", parseFloat(e.target.value))
+                        updateCar(car.id, "price", e.target.value)
                       }
-                      placeholder="FIPE"
+                      placeholder="Preço"
                       className="mb-3"
                     />
 
                     <Input
                       type="number"
-                      value={car.price}
+                      value={car.mileage}
                       onChange={(e) =>
-                        updateCar(car.id, "price", parseFloat(e.target.value))
+                        updateCar(car.id, "mileage", parseInt(e.target.value))
                       }
-                      placeholder="Repasse"
+                      placeholder="Quilometragem"
                     />
 
                   </div>
 
                   {/* HISTÓRICO */}
 
-                  <div>
+                    <div>
 
                     <Label className="text-white/60 text-xs flex items-center gap-2 mb-2">
 
@@ -249,42 +355,32 @@ function Admin() {
                     </Label>
 
                     <Select
-                      value={car.history}
+                      value={car.isAvailable ? "available" : "unavailable"}
                       onValueChange={(value) =>
-                        updateCar(car.id, "history", value)
+                        updateCar(car.id, "isAvailable", value === "available")
                       }
                     >
-
                       <SelectTrigger>
-
-                        <SelectValue placeholder="Histórico" />
-
+                        <SelectValue placeholder="Disponibilidade" />
                       </SelectTrigger>
-
                       <SelectContent>
-
-                        <SelectItem value="clean">
-                          Sem restrições
-                        </SelectItem>
-
-                        <SelectItem value="auction">
-                          Leilão
-                        </SelectItem>
-
-                        <SelectItem value="accident">
-                          Sinistro
-                        </SelectItem>
-
+                        <SelectItem value="available">Disponível</SelectItem>
+                        <SelectItem value="unavailable">Indisponível</SelectItem>
                       </SelectContent>
-
                     </Select>
+
+                    <Input
+                      value={car.description ?? ""}
+                      onChange={(e) =>
+                        updateCar(car.id, "description", e.target.value)
+                      }
+                      placeholder="Descrição"
+                      className="mt-3"
+                    />
 
                     <div className="mt-6">
 
-                      <Button
-                        variant="destructive"
-                        onClick={() => removeCar(car.id)}
-                      >
+                      <Button variant="destructive" onClick={() => removeCar(car.id)}>
 
                         <Trash2 className="w-4 h-4" />
 
@@ -294,15 +390,16 @@ function Admin() {
 
                   </div>
 
-                </div>
+                  </div>
 
-              </CardContent>
+                </CardContent>
 
-            </Card>
+              </Card>
 
-          ))}
+            ))}
 
-        </div>
+          </div>
+        )}
 
       </div>
 
