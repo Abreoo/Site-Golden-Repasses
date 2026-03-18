@@ -5,6 +5,11 @@ import { upload, getFileUrl, validateUploadedFiles, deleteFile } from "./upload"
 import { insertCarSchema, insertCarPhotoSchema } from "@shared/schema";
 import type { Multer } from "multer";
 
+function getParamId(value: unknown): string {
+  if (Array.isArray(value)) return value[0] ?? "";
+  return typeof value === "string" ? value : "";
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -27,7 +32,8 @@ export async function registerRoutes(
 
   app.get("/api/cars/:id", async (req, res) => {
     try {
-      const car = await storage.getCar(req.params.id);
+      const carId = getParamId(req.params.id);
+      const car = await storage.getCar(carId);
       if (!car) {
         return res.status(404).json({ error: "Carro não encontrado" });
       }
@@ -49,8 +55,9 @@ export async function registerRoutes(
 
   app.put("/api/cars/:id", async (req, res) => {
     try {
+      const carId = getParamId(req.params.id);
       const carData = insertCarSchema.partial().parse(req.body);
-      const car = await storage.updateCar(req.params.id, carData);
+      const car = await storage.updateCar(carId, carData);
       if (!car) {
         return res.status(404).json({ error: "Carro não encontrado" });
       }
@@ -62,7 +69,8 @@ export async function registerRoutes(
 
   app.delete("/api/cars/:id", async (req, res) => {
     try {
-      const success = await storage.deleteCar(req.params.id);
+      const carId = getParamId(req.params.id);
+      const success = await storage.deleteCar(carId);
       if (!success) {
         return res.status(404).json({ error: "Carro não encontrado" });
       }
@@ -75,7 +83,8 @@ export async function registerRoutes(
   // Car photos routes
   app.get("/api/cars/:id/photos", async (req, res) => {
     try {
-      const photos = await storage.getCarPhotos(req.params.id);
+      const carId = getParamId(req.params.id);
+      const photos = await storage.getCarPhotos(carId);
       res.json(photos);
     } catch (error) {
       res.status(500).json({ error: "Erro ao buscar fotos" });
@@ -84,6 +93,7 @@ export async function registerRoutes(
 
   app.post("/api/cars/:id/photos", upload.array('photos', 10), async (req, res) => {
     try {
+      const carId = getParamId(req.params.id);
       const files = req.files as Express.Multer.File[];
       const validation = validateUploadedFiles(files);
       
@@ -91,7 +101,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: validation.errors });
       }
 
-      const car = await storage.getCar(req.params.id);
+      const car = await storage.getCar(carId);
       if (!car) {
         return res.status(404).json({ error: "Carro não encontrado" });
       }
@@ -100,7 +110,7 @@ export async function registerRoutes(
       
       for (const file of files) {
         const photoData = insertCarPhotoSchema.parse({
-          carId: req.params.id,
+          carId,
           filename: file.filename,
           originalName: file.originalname,
           mimeType: file.mimetype,
@@ -121,7 +131,8 @@ export async function registerRoutes(
 
   app.delete("/api/photos/:id", async (req, res) => {
     try {
-      const photo = await storage.getCarPhoto(req.params.id);
+      const photoId = getParamId(req.params.id);
+      const photo = await storage.getCarPhoto(photoId);
       if (!photo) {
         return res.status(404).json({ error: "Foto não encontrada" });
       }
@@ -130,7 +141,7 @@ export async function registerRoutes(
       await deleteFile(photo.filename);
       
       // Delete from database
-      const success = await storage.deleteCarPhoto(req.params.id);
+      const success = await storage.deleteCarPhoto(photoId);
       
       if (!success) {
         return res.status(404).json({ error: "Foto não encontrada" });
@@ -144,12 +155,13 @@ export async function registerRoutes(
 
   app.put("/api/photos/:id/main", async (req, res) => {
     try {
-      const photo = await storage.getCarPhoto(req.params.id);
+      const photoId = getParamId(req.params.id);
+      const photo = await storage.getCarPhoto(photoId);
       if (!photo) {
         return res.status(404).json({ error: "Foto não encontrada" });
       }
 
-      const success = await storage.setMainPhoto(photo.carId, req.params.id);
+      const success = await storage.setMainPhoto(photo.carId, photoId);
       
       if (!success) {
         return res.status(400).json({ error: "Erro ao definir foto principal" });
