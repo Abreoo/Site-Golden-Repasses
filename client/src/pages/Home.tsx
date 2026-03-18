@@ -109,12 +109,14 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl font-heading font-bold text-white mb-2">Nossos Consultores</h2>
           <p className="text-white/40 text-sm mb-12">Fale diretamente com nossa equipe via WhatsApp</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
             {[
-              { id: '1', name: 'João Silva', phone: '5511999998888' },
-              { id: '2', name: 'Maria Santos', phone: '5511999998888' },
-              { id: '3', name: 'Pedro Costa', phone: '5511999998888' },
-              { id: '4', name: 'Ana Oliveira', phone: '5511999998888' }
+              { id: '1', name: 'Matheus', phone: '5511999998888' },
+              { id: '2', name: 'Luiz Andre', phone: '5511999998888' },
+              { id: '3', name: 'Rafael', phone: '5511999998888' },
+              { id: '4', name: 'Ezequiel', phone: '5511999998888' },
+              { id: '5', name: 'Eric', phone: '5511999998888' },
+              { id: '6', name: 'Tiago', phone: '5511999998888' }
             ].map((seller) => (
               <a 
                 key={seller.id}

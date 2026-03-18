@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { CarPhotoUpload } from '@/components/CarPhotoUpload';
 import { CarPhotoManager } from '@/components/CarPhotoManager';
 import { ArrowLeft, Calendar, Fuel, Gauge, Settings, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
@@ -192,19 +191,9 @@ export default function CarDetailPage() {
           <div className="space-y-6">
             <CarPhotoManager 
               carId={carId} 
+              canManage={false}
               onPhotoChange={() => {
                 // Refresh car data if needed
-                fetchCar();
-              }} 
-            />
-            
-            <Separator />
-            
-            <CarPhotoUpload 
-              carId={carId} 
-              onUploadComplete={() => {
-                toast.success('Fotos adicionadas com sucesso!');
-                // Refresh photos
                 fetchCar();
               }} 
             />

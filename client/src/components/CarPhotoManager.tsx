@@ -21,9 +21,10 @@ interface CarPhoto {
 interface CarPhotoManagerProps {
   carId: string;
   onPhotoChange?: () => void;
+  canManage?: boolean;
 }
 
-export function CarPhotoManager({ carId, onPhotoChange }: CarPhotoManagerProps) {
+export function CarPhotoManager({ carId, onPhotoChange, canManage = false }: CarPhotoManagerProps) {
   const [photos, setPhotos] = useState<CarPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<CarPhoto | null>(null);
@@ -200,7 +201,7 @@ export function CarPhotoManager({ carId, onPhotoChange }: CarPhotoManagerProps) 
                     </DialogContent>
                   </Dialog>
 
-                  {!photo.isMain && (
+                  {canManage && !photo.isMain && (
                     <Button
                       size="sm"
                       variant="secondary"
@@ -211,14 +212,16 @@ export function CarPhotoManager({ carId, onPhotoChange }: CarPhotoManagerProps) 
                     </Button>
                   )}
 
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleDeletePhoto(photo.id)}
-                    title="Excluir foto"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {canManage && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeletePhoto(photo.id)}
+                      title="Excluir foto"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
 
                 {/* Photo info */}
